@@ -12,7 +12,7 @@ class Database(databaseDriverFactory: DatabaseDriverFactory) {
         }
     }
 
-    fun getAllUsers(): List<User> {
+    suspend fun getAllUsers(): List<User> {
         return dbQuery.getUsers().executeAsList()
     }
 

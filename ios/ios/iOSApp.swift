@@ -3,10 +3,10 @@ import shared
 
 @main
 struct iOSApp: App {
-	let sdk = Database(databaseDriverFactory: DatabaseDriverFactory())
+	let database = Database(databaseDriverFactory: DatabaseDriverFactory())
 	var body: some Scene {
 		WindowGroup {
-			ContentView()
+			ContentView(viewModel: .init(database: database))
 		}
 	}
 }

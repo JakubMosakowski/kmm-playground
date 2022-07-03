@@ -9,10 +9,16 @@ version = "1.0"
 
 kotlin {
     android()
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
 
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach {
+        it.binaries.framework {
+            baseName = "shared"
+        }
+    }
     cocoapods {
         summary = "Some description for the Shared Module"
         homepage = "Link to the Shared Module homepage"
@@ -20,12 +26,22 @@ kotlin {
         podfile = project.file("../ios/Podfile")
         framework {
             baseName = "shared"
+            isStatic = false
         }
     }
     
     sourceSets {
-        val commonMain by getting
-        val androidMain by getting
+        val commonMain by getting {
+            dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
+                implementation("com.squareup.sqldelight:runtime:1.5.3")
+            }
+        }
+        val androidMain by getting {
+            dependencies {
+                implementation("com.squareup.sqldelight:android-driver:1.5.3")
+            }
+        }
         val iosX64Main by getting
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
@@ -34,8 +50,11 @@ kotlin {
             iosX64Main.dependsOn(this)
             iosArm64Main.dependsOn(this)
             iosSimulatorArm64Main.dependsOn(this)
-        }
 
+            dependencies {
+                implementation("com.squareup.sqldelight:native-driver:1.5.3")
+            }
+        }
     }
 }
 
@@ -47,8 +66,9 @@ android {
         targetSdk = 32
     }
 }
+
 sqldelight {
-    database("CounterDb") {
-        packageName = "com.example.sqldelight.hockey"
+    database("AppDatabase") {
+        packageName = "com.jakmos.counter.sqldelight.data"
     }
 }
